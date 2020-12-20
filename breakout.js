@@ -1,15 +1,14 @@
 //declare variables for html elements
 let canvas = document.getElementById('gameCanvas');
-
-let score = 0;
-
 const ctx = canvas.getContext("2d");
-
 const rulesBtn = document.getElementById('rules-btn');
-
 const closeBtn = document.getElementById('close-btn');
-
 const rules = document.getElementById('rules');
+
+//declare game variables
+let score = 0;
+let brickRowCount = 9;
+let brickColumnCount = 5;
 
 //rules and close event handlers
 rulesBtn.addEventListener("click", () => rules.classList.add("show"));
@@ -36,6 +35,27 @@ const paddle = {
   dx: 0
 }
 
+//create brick object
+const brickInfo = {
+  w: 20,
+  h: 5,
+  padding: 5,
+  offsetX: 35,
+  offsetY: 25,
+  visible: true
+}
+
+//create bricks
+const bricks = [];
+for (let i = 0; i < brickRowCount; i++) {
+  bricks[i] = [];
+  for (let j = 0; j < brickColumnCount; j++) {
+    const x = i * (brickInfo.w + brickInfo.padding) + brickInfo.offsetX;
+    const y = j * (brickInfo.h + brickInfo.padding) + brickInfo.offsetY;
+    bricks[i][j] = {x, y, ...brickInfo}
+  }
+}
+
 //draw ball on canvas
 const drawBall = (ball) => {
   ctx.beginPath();
@@ -55,9 +75,22 @@ const drawPaddle = (paddle) => {
 }
 
 //draw score on canvas
-const drawScore = (canvas) => {
+const drawScore = () => {
   ctx.font = "10px Arial";
   ctx.fillText(`Score: ${score}`, canvas.width - 50, 20);
+}
+
+//draw bricks on canvas
+const drawBricks = () => {
+  bricks.forEach(column => {
+    column.forEach(brick => {
+      ctx.beginPath();
+      ctx.rect(brick.x, brick.y, brick.w, brick.h);
+      ctx.fillStyle = brick.visible ? '#0095dd': 'transparent';
+      ctx.fill();
+      ctx.closePath();
+    })
+  })
 }
 
 //animation
@@ -65,7 +98,8 @@ const drawScore = (canvas) => {
 const draw = () => {
   drawBall(ball);
   drawPaddle(paddle);
-  drawScore(canvas);
+  drawScore();
+  drawBricks();
 }
 
 draw();
