@@ -15,6 +15,7 @@ rulesBtn.addEventListener("click", () => rules.classList.add("show"));
 
 closeBtn.addEventListener("click", () => rules.classList.remove("show"));
 
+//objects
 //create ball object
 const ball = {
   x: canvas.width / 2,
@@ -30,7 +31,7 @@ const paddle = {
   x: canvas.width / 2 - 40,
   y: canvas.height -20,
   w: 20,
-  h: 5,
+  h: 2.5,
   speed: 8,
   dx: 0
 }
@@ -45,6 +46,7 @@ const brickInfo = {
   visible: true
 }
 
+//canvas elements
 //create bricks
 const bricks = [];
 for (let i = 0; i < brickRowCount; i++) {
@@ -54,6 +56,19 @@ for (let i = 0; i < brickRowCount; i++) {
     const y = j * (brickInfo.h + brickInfo.padding) + brickInfo.offsetY;
     bricks[i][j] = {x, y, ...brickInfo}
   }
+}
+
+//draw bricks on canvas
+const drawBricks = () => {
+  bricks.forEach(column => {
+    column.forEach(brick => {
+      ctx.beginPath();
+      ctx.rect(brick.x, brick.y, brick.w, brick.h);
+      ctx.fillStyle = brick.visible ? '#0095dd': 'transparent';
+      ctx.fill();
+      ctx.closePath();
+    })
+  })
 }
 
 //draw ball on canvas
@@ -80,26 +95,57 @@ const drawScore = () => {
   ctx.fillText(`Score: ${score}`, canvas.width - 50, 20);
 }
 
-//draw bricks on canvas
-const drawBricks = () => {
-  bricks.forEach(column => {
-    column.forEach(brick => {
-      ctx.beginPath();
-      ctx.rect(brick.x, brick.y, brick.w, brick.h);
-      ctx.fillStyle = brick.visible ? '#0095dd': 'transparent';
-      ctx.fill();
-      ctx.closePath();
-    })
-  })
-}
-
 //animation
 //put all drawings inside a draw function to continually re-draw them to the canvas(animate)
 const draw = () => {
+  //clear canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
   drawBall(ball);
   drawPaddle(paddle);
   drawScore();
   drawBricks();
 }
 
-draw();
+//move paddle on canvas
+const movePaddle = () => {
+  paddle.x += paddle.dx;
+  //wall detection
+  if (paddle.x + paddle.w > canvas.width) {
+    paddle.x = canvas.width - paddle.w
+  }
+  if (paddle.x < 0) {
+    paddle.x = 0
+  }
+}
+
+//update canvas drawing and animation
+const update = () => {
+  movePaddle();
+  
+  //draw everything
+  draw();
+
+  requestAnimationFrame(update);
+}
+
+update();
+
+//keydown event function
+const keyDown = (e) => {
+  if (e.key === 'Right' || e.key === 'ArrowRight') {
+    paddle.dx = paddle.speed;
+  } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
+    paddle.dx = -paddle.speed;
+  }
+}
+
+const keyUp = (e) => {
+  if (e.key === 'Right' || e.key === 'ArrowRight' || e.key === 'Left' || e.key === 'ArrowLeft') {
+    paddle.dx = 0;
+  }
+}
+
+//keyboard event handlers
+document.addEventListener('keydown', keyDown);
+document.addEventListener('keyup', keyUp);
