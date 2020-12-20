@@ -1,12 +1,12 @@
 1. create canvas context
 2. create and draw ball
 3. create and draw platform
---
 4. create bricks
 5. draw score
 6. add update() to animate using requestAnimationFrame()
 7. move the platform
 8. keyboard event handlers to move paddle
+----
 9. move ball
 10. add collision logic
 11. increase score when bricks break

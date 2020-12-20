@@ -21,15 +21,15 @@ const ball = {
   x: canvas.width / 2,
   y: canvas.height / 2,
   size: 2,
-  speed: 4,
-  dx: 4,
-  dy: -4
+  speed: 2,
+  dx: 2,
+  dy: -2
 }
 
 //create paddle object
 const paddle = {
   x: canvas.width / 2 - 40,
-  y: canvas.height -20,
+  y: canvas.height - 20,
   w: 20,
   h: 2.5,
   speed: 8,
@@ -54,7 +54,7 @@ for (let i = 0; i < brickRowCount; i++) {
   for (let j = 0; j < brickColumnCount; j++) {
     const x = i * (brickInfo.w + brickInfo.padding) + brickInfo.offsetX;
     const y = j * (brickInfo.h + brickInfo.padding) + brickInfo.offsetY;
-    bricks[i][j] = {x, y, ...brickInfo}
+    bricks[i][j] = { x, y, ...brickInfo }
   }
 }
 
@@ -64,7 +64,7 @@ const drawBricks = () => {
     column.forEach(brick => {
       ctx.beginPath();
       ctx.rect(brick.x, brick.y, brick.w, brick.h);
-      ctx.fillStyle = brick.visible ? '#0095dd': 'transparent';
+      ctx.fillStyle = brick.visible ? '#0095dd' : 'transparent';
       ctx.fill();
       ctx.closePath();
     })
@@ -75,7 +75,7 @@ const drawBricks = () => {
 const drawBall = (ball) => {
   ctx.beginPath();
   ctx.arc(ball.x, ball.y, ball.size, 0, Math.PI * 2);
-  ctx.fillStyle="#0095dd";
+  ctx.fillStyle = "#0095dd";
   ctx.fill();
   ctx.closePath();
 }
@@ -84,7 +84,7 @@ const drawBall = (ball) => {
 const drawPaddle = (paddle) => {
   ctx.beginPath();
   ctx.rect(paddle.x, paddle.y, paddle.w, paddle.h);
-  ctx.fillstyle="#0095dd";
+  ctx.fillstyle = "#0095dd";
   ctx.fill();
   ctx.closePath();
 }
@@ -110,6 +110,7 @@ const draw = () => {
 //move paddle on canvas
 const movePaddle = () => {
   paddle.x += paddle.dx;
+
   //wall detection
   if (paddle.x + paddle.w > canvas.width) {
     paddle.x = canvas.width - paddle.w
@@ -119,10 +120,47 @@ const movePaddle = () => {
   }
 }
 
+const moveBall = () => {
+  ball.x += ball.dx;
+  ball.y += ball.dy;
+
+  //wall collision(right/left)
+  if (ball.x + ball.size > canvas.width || ball.x - ball.size < 0) {
+    ball.dx *= -1; //ball.dx = ball.dx * -1
+  }
+  //wall collision(top/bottom)
+  if (ball.y + ball.size > canvas.height || ball.y - ball.size < 0) {
+    ball.dy *= -1;
+  }
+
+  //paddle collision
+  if (ball.x - ball.size > paddle.x && ball.x + ball.size < paddle.x + paddle.w && ball.y + ball.size > paddle.y) {
+    ball.dy = -ball.speed;
+  }
+
+  //brick collision
+  bricks.forEach(column => {
+    column.forEach(brick => {
+      if (brick.visible) {
+        if (
+          ball.x - ball.size > brick.x && //left brick side
+          ball.x + ball.size < brick.x + brick.w && //right brick side
+          ball.y + ball.size > brick.y && //top brick side
+          ball.y - ball.size < brick.y + brick.h //bottom brick side
+        )
+      {
+        ball.dy *= -1;
+        brick.visible = false;
+      }
+      }
+    })
+    })
+}
+
 //update canvas drawing and animation
 const update = () => {
   movePaddle();
-  
+  moveBall();
   //draw everything
   draw();
 
@@ -131,7 +169,7 @@ const update = () => {
 
 update();
 
-//keydown event function
+//keydown/keyup event functions
 const keyDown = (e) => {
   if (e.key === 'Right' || e.key === 'ArrowRight') {
     paddle.dx = paddle.speed;
