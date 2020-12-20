@@ -21,7 +21,7 @@ const ball = {
   x: canvas.width / 2,
   y: canvas.height / 2,
   size: 2,
-  speed: 2,
+  speed: .5,
   dx: 2,
   dy: -2
 }
@@ -91,8 +91,11 @@ const drawPaddle = (paddle) => {
 
 //draw score on canvas
 const drawScore = () => {
-  ctx.font = "10px Arial";
-  ctx.fillText(`Score: ${score}`, canvas.width - 50, 20);
+  ctx.font = '10px Bungee Inline';
+  ctx.fillText(`Score: ${score}`, canvas.width - 60, 20);
+  if (score === 45) {
+    ctx.fillText(`Score: ${score} (MAX)`, canvas.width - 50, 20)
+  }
 }
 
 //animation
@@ -174,6 +177,8 @@ const increaseScore = () => {
   }
 }
 
+
+//create a function to reset bricks after bottom wall is hit
 const showAllBricks = () => {
   bricks.forEach(column => {
     column.forEach(brick => (brick.visible = true));

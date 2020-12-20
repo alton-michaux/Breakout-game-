@@ -5,6 +5,7 @@
 body {
   background-image: repeating-linear-gradient(#874785, #561553, #230022);
   min-height: 100vh;
+  font-family: 'Bungee Inline', cursive;
 }
 
 canvas {
@@ -57,6 +58,8 @@ canvas {
 
 .rules.show {
   transform: translateX(0);
+  background-image: repeating-linear-gradient(#CE8555, #853E10, #371600);
+  text-decoration: #0095dd;
 }
 
 #header {
