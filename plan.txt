@@ -1,6 +1,7 @@
 1. create canvas context
 2. create and draw ball
 3. create and draw platform
+--
 4. create bricks
 5. draw score
 6. add update() to animate using requestAnimationFrame()

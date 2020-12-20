@@ -16,8 +16,7 @@ rulesBtn.addEventListener("click", () => rules.classList.add("show"));
 
 closeBtn.addEventListener("click", () => rules.classList.remove("show"));
 
-//animation
-//create ball properties
+//create ball object
 const ball = {
   x: canvas.width / 2,
   y: canvas.height / 2,
@@ -27,7 +26,7 @@ const ball = {
   dy: -4
 }
 
-//create paddle properties
+//create paddle object
 const paddle = {
   x: canvas.width / 2 - 40,
   y: canvas.height -20,
@@ -61,7 +60,8 @@ const drawScore = (canvas) => {
   ctx.fillText(`Score: ${score}`, canvas.width - 50, 20);
 }
 
-//put all drawings inside a draw function to continually draw them to the canvas(animate)
+//animation
+//put all drawings inside a draw function to continually re-draw them to the canvas(animate)
 const draw = () => {
   drawBall(ball);
   drawPaddle(paddle);
