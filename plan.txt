@@ -6,8 +6,8 @@
 6. add update() to animate using requestAnimationFrame()
 7. move the platform
 8. keyboard event handlers to move paddle
-----
 9. move ball
 10. add collision logic
+---
 11. increase score when bricks break
 12. lose logic - reset bricks and reset score
